@@ -1,0 +1,44 @@
+pipeline {
+    agent any 
+    stages {
+        stage('Clone Repo') {
+            steps {
+                echo 'Clone backend application'
+                git url: 'https://ridhang7:<your-access-token>@github.com/ridhang7/<project-name>', branch: 'Development'
+                echo 'Clone backend application Completed'
+            }
+        }
+        stage('Install Dependencies') {
+            steps {
+                echo 'Installing dependencies ' 
+                script {
+                   try {
+                        // Install project dependencies
+                        bat 'npm install'
+                    } catch (Exception e) {
+                        echo "Error during installation: ${e.message}"
+                        error("Dependency installation failed")
+                    }
+                }
+            }
+        }
+        stage('Run Tests') {
+            steps {
+                script {
+                    echo 'Unit test case will be executed'
+                }
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                echo 'Starting deployment'
+                script {
+                    // bat 'cd <project-name>'
+                    // bat 'pm2 start src/index.js --name backend-server'
+                    bat 'npm run start &'
+                    }
+            }
+        }
+}
+}
